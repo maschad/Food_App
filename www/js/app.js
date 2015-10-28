@@ -28,30 +28,32 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
   //Route to home page 
   .state('tabs',{
-    url:'/tabs',
+    url:'/tab',
+    abstract:true,
     templateUrl:'templates/tabsController.html'
   })
 
-  .state('home',{
+  .state('tabs.home',{
     url:'/home',
     views:{
-      home:{
-        templateUrl:'templateUrl/home.html'
+      'home-tab':{
+        templateUrl:'templates/home.html'
       }
     }
   })
 
-  .state('orders',{
+  .state('tabs.orders',{
     url:'/orders',
     views:{
-      orders:{
-        templateUrl:'templateUrl/orders.html'
+      'orders-tab':{
+        templateUrl:'templates/orders.html'
       }
     }
-  })
+  });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/home');
+  $urlRouterProvider.otherwise('/tab/home');
+
   
 })
 

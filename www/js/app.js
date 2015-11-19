@@ -26,34 +26,52 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
   //Router for state management
   $stateProvider
 
-  //Route to home page 
-  .state('tabs',{
-    url:'/tab',
-    abstract:true,
-    templateUrl:'templates/tabsController.html'
-  })
+  //Route to login
 
-  .state('tabs.home',{
-    url:'/home',
-    views:{
-      'home-tab':{
-        templateUrl:'templates/home.html'
-      }
-    }
-  })
+    .state('login', {
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'loginCtrl'
+    })
 
-  .state('tabs.orders',{
-    url:'/orders',
-    views:{
-      'orders-tab':{
-        templateUrl:'templates/orders.html'
+    //Route to home page
+    .state('tabs', {
+      url: '/tab',
+      abstract: true,
+      templateUrl: 'templates/tabsController.html'
+    })
+
+    .state('tabs.home', {
+      url: '/home',
+      views: {
+        'home-tab': {
+          templateUrl: 'templates/home.html',
+          controller: "homeCtrl"
+        }
       }
-    }
-  });
+    })
+
+    .state('tabs.orders', {
+      url: '/orders',
+      views: {
+        'orders-tab': {
+          templateUrl: 'templates/orders.html'
+        }
+      }
+    });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/home');
+  $urlRouterProvider.otherwise('/login');
 
-  
 })
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+    $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+      if (!AuthService.isAuthenticated()) {
+        if (next.name !== 'login') {
+          event.preventDefault();
+          $state.go('login');
+        }
+      }
+    });
+  });
 

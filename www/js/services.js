@@ -1,4 +1,4 @@
-angular.module('app.services')
+angular.module('app')
 
   .service('AuthService', function($q, $http) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
@@ -57,7 +57,6 @@ angular.module('app.services')
     return {
       login: login,
       logout: logout,
-      isAuthorized: isAuthorized,
       isAuthenticated: function() {return isAuthenticated;},
       username: function() {return username;}
     };

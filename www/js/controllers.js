@@ -23,7 +23,27 @@ angular.module('app')
   };
 })
 
-.controller('ordersCtrl', function($scope) {
+.controller('ordersCtrl', function($scope,Orders) {
+  $scope.data ={
+    showDelete: false
+  };
+
+  $scope.orders = Orders.toShow();
+
+  $scope.remove = function(order){
+    Orders.remove(order);
+
+  };
+
+})
+
+.controller('placeOrderCtrl',function($scope,Orders){
+  //Show all available orders for selection
+  $scope.orders = Orders.all();
+
+  $scope.add = function (item) {
+    Orders.choose(item);
+  };
 })
 
 .controller('tabController', function($scope){

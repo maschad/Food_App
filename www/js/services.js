@@ -60,4 +60,56 @@ angular.module('app')
       isAuthenticated: function() {return isAuthenticated;},
       username: function() {return username;}
     };
-  });
+  })
+
+.factory('Orders',function(){
+
+  var orders = [{
+    id:0,
+    name:'Meal Deal',
+    icon:'images/mealDeal.png',
+    price:250.00,
+    quantity:0
+  },
+    {
+      id:1,
+      name:'Zinger',
+      icon:'images/Zinger.png',
+      price:300.00,
+      quantity:0
+    }];
+
+  return{
+    all:function(){
+      return orders;
+    },
+    remove:function(order){
+      orders.splice(orders.indexOf(order),1);
+      order.quantity -= 1;
+      order.placed = true;
+    },
+    get:function(orderId){
+      for(var i=0; i < orders.length; i++){
+        if(orders[i].id == orderId.id){
+          return orders[i];
+        }
+      }
+      return null;
+    },
+    choose:function(orderId){
+      var toChoose = this.get(orderId);
+      toChoose.quantity += 1;
+      toChoose.placed = true;
+      return toChoose;
+    },
+    toShow:function(){
+      var toRet;
+      for(var i=0; i < orders.length; i++){
+        if(orders[i].quantity > 0){
+          toRet.add(orders[i]);
+        }
+      }
+      return toRet;
+    }
+  };
+});

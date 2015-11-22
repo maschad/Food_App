@@ -4,12 +4,11 @@
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="order in orders" type="item-text-wrap" href="#/tab/orders/{{order.id}}">
         <img ng-src="{{order.icon}}">
         <h2>{{order.name}}</h2>
-        <p>{{order.price}}</p>
-        <p>{{order.quantity}}</p>
+        <p>{{order.price | currency}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
-        <ion-option-button class="button-assertive" ng-click="remove(order)">
-          Remove
+        <ion-option-button class="button-calm" ng-click="add(order)">
+          Add
         </ion-option-button>
       </ion-item>
     </ion-list>

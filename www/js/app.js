@@ -55,7 +55,18 @@ angular.module('app', ['ionic'])
       url: '/orders',
       views: {
         'orders-tab': {
-          templateUrl: 'templates/orders.html'
+          templateUrl: 'templates/orders.html',
+          controller: 'ordersCtrl'
+        }
+      }
+    })
+
+    .state('tabs.placeOrder', {
+      url:'/placeorder',
+      views:{
+        'placeorder-tab':{
+          templateUrl: 'templates/placeOrder.html',
+          controller: 'placeOrderCtrl'
         }
       }
     });

@@ -6,7 +6,7 @@
 </ion-nav-buttons>
   <ion-content>
     <ion-list show-delete="data.showDelete">
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="item in cart.items" type="item-text-wrap" href="#/tab/orders/{{item.id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="item in cart.items track by $index" type="item-text-wrap" href="#/tab/orders/{{item.id}}">
         <img ng-src="{{item.icon}}">
         <h2>{{item.name}}</h2>
         <p>{{item.price | currency}}</p>

@@ -97,24 +97,18 @@ angular.module('app')
       return null;
     },
     deleteItem: function (item) {
-      orders.splice(avail.indexOf(item), 1);
+      orders.splice(orders.indexOf(item), 1);
     },
     addOrder:function(item){
-      console.log("function called");
       cart.items.push(item);
       cart.total = parseFloat(cart.total) + parseFloat(item.price);
-      console.log("item added");
     },
     removeOrder:function(item){
       var index = cart.items.indexOf(item);
       if (index >= 0) {
-        cart.total = parseInt(cart.total) - parseInt(cart.items[index].price);
+        cart.total = parseFloat(cart.total) - parseFloat(cart.items[index].price);
         cart.items.splice(index, 1);
-      }
-      if (!cart.items.length) {
-        cart = {};
-        cart.items = [];
-        cart.total = 0;
+        console.log("item deleted");
       }
     },
     showOrders: function () {

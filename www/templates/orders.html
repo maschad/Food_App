@@ -10,7 +10,6 @@
         <img ng-src="{{item.icon}}">
         <h2>{{item.name}}</h2>
         <p>{{item.price | currency}}</p>
-        <p>{{item.quantity}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
         <ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(item)"></ion-delete-button>
         <ion-option-button class="button-assertive" ng-click="edit(item)">Edit</ion-option-button>

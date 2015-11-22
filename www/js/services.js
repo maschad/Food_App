@@ -70,12 +70,54 @@ angular.module('app')
     icon: 'img/mealDeal.png',
     price: 250.00,
   },
-    {
-      id: 1,
-      name: 'Zinger',
-      icon: 'img/Zinger.png',
-      price: 300.00,
-    }];
+  {
+    id: 1,
+    name: 'Zinger',
+    icon: 'img/Zinger.png',
+    price: 300.00,
+  },
+  {
+    id: 2,
+    name: 'Famous Bowl',
+    icon: 'img/famous.png',
+    price: 150.00,
+  },
+  {
+    id: 3,
+    name: 'Nine Piece Bucket',
+    icon: 'img/nine.png',
+    price: 650.00,
+  },
+  {
+    id: 4,
+    name: 'Popcorn Chicken',
+    icon: 'img/popcorn.png',
+    price: 250.00,
+  },
+  {
+    id: 5,
+    name: 'Wings',
+    icon: 'img/wings.png',
+    price: 350.00,
+  },
+  {
+    id: 6,
+    name: 'Fries',
+    icon: 'img/fries.png',
+    price: 50.00,
+  },
+  {
+    id: 7,
+    name: 'Biscuit',
+    icon: 'img/biscuit.png',
+    price: 40.00,
+  },
+  {
+    id: 8,
+    name: 'Drink',
+    icon: 'img/drink.png',
+    price: 25.00,
+  }];
 
   var cart ={};
   cart.items =[];

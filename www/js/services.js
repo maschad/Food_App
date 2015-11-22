@@ -1,6 +1,6 @@
 angular.module('app')
 
-  .service('AuthService', function($q, $http) {
+.service('AuthService', function($q, $http) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var username = '';//username not sent yet
     var isAuthenticated = false;// Intially user is not logged in
@@ -60,56 +60,67 @@ angular.module('app')
       isAuthenticated: function() {return isAuthenticated;},
       username: function() {return username;}
     };
-  })
+})
 
-.factory('Orders',function(){
+.factory('Orders',function() {
 
   var orders = [{
-    id:0,
-    name:'Meal Deal',
-    icon:'img/mealDeal.png',
-    price:250.00,
-    quantity:0
+    id: 0,
+    name: 'Meal Deal',
+    icon: 'img/mealDeal.png',
+    price: 250.00,
   },
     {
-      id:1,
-      name:'Zinger',
-      icon:'img/Zinger.png',
-      price:300.00,
-      quantity:0
+      id: 1,
+      name: 'Zinger',
+      icon: 'img/Zinger.png',
+      price: 300.00,
     }];
 
-  return{
-    all:function(){
+  var cart ={};
+  cart.items =[];
+  cart.total = 0;
+
+  return {
+    all: function () {
       return orders;
     },
-    remove:function(order){
-      orders.splice(orders.indexOf(order),1);
-      order.quantity -= 1;
-      order.placed = true;
+    remove: function (order) {
+      orders.splice(orders.indexOf(order), 1);
     },
-    get:function(orderId){
-      for(var i=0; i < orders.length; i++){
-        if(orders[i].id == orderId.id){
+    get: function (orderId) {
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id == parseInt(orderId)) {
           return orders[i];
         }
       }
       return null;
     },
-    choose:function(orderId){
-      var toChoose = this.get(orderId);
-      toChoose.quantity += 1;
-      toChoose.placed = true;
-      return toChoose;
+    deleteItem: function (item) {
+      orders.splice(avail.indexOf(item), 1);
     },
-    toShow:function(){
-      var toRet;
-      for(var i=0; i < orders.length; i++){
-        if(orders[i].quantity > 0){
-          toRet.add(orders[i]);
-        }
+    addOrder:function(item){
+      console.log("function called");
+      cart.items.push(item);
+      cart.total = parseFloat(cart.total) + parseFloat(item.price);
+      console.log("item added");
+    },
+    removeOrder:function(item){
+      var index = cart.items.indexOf(item);
+      if (index >= 0) {
+        cart.total = parseInt(cart.total) - parseInt(cart.items[index].price);
+        cart.items.splice(index, 1);
       }
-      return toRet;
+      if (!cart.items.length) {
+        cart = {};
+        cart.items = [];
+        cart.total = 0;
+      }
+    },
+    showOrders: function () {
+      return cart;
     }
-  };
+  }
 });
+
+

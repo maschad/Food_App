@@ -24,15 +24,19 @@ angular.module('app')
 })
 
 .controller('ordersCtrl', function($scope,Orders) {
-  $scope.data ={
+  //To show Delete button
+  $scope.data = {
     showDelete: false
   };
 
-  $scope.orders = Orders.toShow();
-
-  $scope.remove = function(order){
-    Orders.remove(order);
-
+  //Deletes Items
+  $scope.onItemDelete = function(item){
+    Orders.removeOrder(item);
+  };
+  //To display items
+  $scope.cart = Orders.showOrders();
+  //To edit Items
+  $scope.edit = function(item) {
   };
 
 })
@@ -41,9 +45,11 @@ angular.module('app')
   //Show all available orders for selection
   $scope.orders = Orders.all();
 
-  $scope.add = function (item) {
-    Orders.choose(item);
+  // When an order is selected add it my orders
+  $scope.addOrder = function(item){
+    Orders.addOrder(item);
   };
+
 })
 
 .controller('orderDetailCtrl',function($scope,Orders,$stateParams){

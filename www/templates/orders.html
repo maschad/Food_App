@@ -1,17 +1,21 @@
 <ion-view view-title="My Orders">
+  <ion-nav-buttons side="left">
+      <div class="buttons">
+        <button class="button button-icon icon ion-ios-minus-outline" ng-click="data.showDelete = !data.showDelete;"></button>
+      </div>
+</ion-nav-buttons>
   <ion-content>
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="order in orders" type="item-text-wrap" href="#/tab/orders/{{order.id}}">
-        <img ng-src="{{order.icon}}">
-        <h2>{{order.name}}</h2>
-        <p>{{order.price}}</p>
-        <p>{{order.quantity}}</p>
+    <ion-list show-delete="data.showDelete">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="item in cart.items" type="item-text-wrap" href="#/tab/orders/{{item.id}}">
+        <img ng-src="{{item.icon}}">
+        <h2>{{item.name}}</h2>
+        <p>{{item.price | currency}}</p>
+        <p>{{item.quantity}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
-
-        <ion-option-button class="button-assertive" ng-click="remove(order)">
-          Remove
-        </ion-option-button>
+        <ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(item)"></ion-delete-button>
+        <ion-option-button class="button-assertive" ng-click="edit(item)">Edit</ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>
+  <ion-footer-bar class="bar-assertive" align-title="right">Total : {{cart.total}}</ion-footer-bar>
 </ion-view>

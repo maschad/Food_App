@@ -1,4 +1,4 @@
-<ion-view view-title="My Orders">
+<ion-view view-title="Place An Order">
   <ion-content>
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="order in orders" type="item-text-wrap" href="#/tab/orders/{{order.id}}">
@@ -7,7 +7,7 @@
         <p>{{order.price | currency}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
-        <ion-option-button class="button-calm" ng-click="add(order)">
+        <ion-option-button class="button-calm" ng-click="addOrder(order)">
           Add
         </ion-option-button>
       </ion-item>

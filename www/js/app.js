@@ -69,6 +69,15 @@ angular.module('app', ['ionic'])
           controller: 'placeOrderCtrl'
         }
       }
+    })
+    .state('tab.orderDetail', {
+      url: '/placeorder/:orderId',
+      views: {
+        'tab-chats': {
+          templateUrl: 'templates/orderDetail.html',
+          controller: 'orderDetailCtrl'
+        }
+      }
     });
 
   // if none of the above states are matched, use this as the fallback

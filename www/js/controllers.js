@@ -46,5 +46,9 @@ angular.module('app')
   };
 })
 
+.controller('orderDetailCtrl',function($scope,Orders,$stateParams){
+  $scope.order = Orders.get($stateParams.orderId);
+
+})
 .controller('tabController', function($scope){
 });

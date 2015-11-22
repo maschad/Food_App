@@ -67,14 +67,14 @@ angular.module('app')
   var orders = [{
     id:0,
     name:'Meal Deal',
-    icon:'images/mealDeal.png',
+    icon:'img/mealDeal.png',
     price:250.00,
     quantity:0
   },
     {
       id:1,
       name:'Zinger',
-      icon:'images/Zinger.png',
+      icon:'img/Zinger.png',
       price:300.00,
       quantity:0
     }];

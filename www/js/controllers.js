@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('loginCtrl', function($scope,AuthService,$ionicPopup,$state) {
+.controller('loginCtrl', function($scope,AuthService,$ionicPopup,$state,Auth) {
   $scope.data = {};
   //controller for the login screen, calls the login in function passing the data and the assigns username variables
   $scope.login = function(data) {
@@ -13,6 +13,14 @@ angular.module('app')
       });
     });
   };
+
+  $scope.loginWithGoogle = function(){
+    Auth.$authWithOAuthPopup('google')
+      .then(function(authData) {
+        $state.go('tab.dash');
+      });
+    this.$inject = ['Auth', '$state'];
+  }
 })
   // Once user authenticated we proceed to home screen
 .controller('homeCtrl', function($scope, $state, $http, $ionicPopup, AuthService) {

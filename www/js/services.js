@@ -62,6 +62,11 @@ angular.module('app')
     };
 })
 
+.factory('Auth', function(rootRef,$firebaseAuth){
+    return $firebaseAuth(rootRef);
+    Auth.$inject = ['rootRef', '$firebaseAuth'];
+})
+
 .factory('Orders',function() {
 
   var orders = [{

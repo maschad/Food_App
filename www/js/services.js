@@ -1,6 +1,6 @@
 angular.module('app')
 
-.service('AuthService', function($q, $http) {
+.service('AuthService', function($q, $http,$firebaseAuth,rootRef) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var username = '';//username not sent yet
     var isAuthenticated = false;// Intially user is not logged in
@@ -35,6 +35,7 @@ angular.module('app')
       $http.defaults.headers.common['X-Auth-Token'] = undefined;
       window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     }
+  
     //name and password passed in for comparisons against database
     var login = function(name, pw) {
       return $q(function(resolve, reject) {
@@ -47,10 +48,12 @@ angular.module('app')
         }
       });
     };
+
     // logout function is called , which destroys credentials
     var logout = function() {
       destroyUserCredentials();
     };
+
 
     loadUserCredentials();
 
@@ -61,11 +64,12 @@ angular.module('app')
       username: function() {return username;}
     };
 })
-
+  
 .factory('Auth', function(rootRef,$firebaseAuth){
     return $firebaseAuth(rootRef);
     Auth.$inject = ['rootRef', '$firebaseAuth'];
 })
+
 
 .factory('Orders',function() {
 
@@ -73,55 +77,55 @@ angular.module('app')
     id: 0,
     name: 'Meal Deal',
     icon: 'img/mealDeal.png',
-    price: 250.00,
+    price: 250.00
   },
   {
     id: 1,
     name: 'Zinger',
     icon: 'img/Zinger.png',
-    price: 300.00,
+    price: 300.00
   },
   {
     id: 2,
     name: 'Famous Bowl',
     icon: 'img/famous.png',
-    price: 150.00,
+    price: 150.00
   },
   {
     id: 3,
     name: 'Nine Piece Bucket',
     icon: 'img/nine.png',
-    price: 650.00,
+    price: 650.00
   },
   {
     id: 4,
     name: 'Popcorn Chicken',
     icon: 'img/popcorn.png',
-    price: 250.00,
+    price: 250.00
   },
   {
     id: 5,
     name: 'Wings',
     icon: 'img/wings.png',
-    price: 350.00,
+    price: 350.00
   },
   {
     id: 6,
     name: 'Fries',
     icon: 'img/fries.png',
-    price: 50.00,
+    price: 50.00
   },
   {
     id: 7,
     name: 'Biscuit',
     icon: 'img/biscuit.png',
-    price: 40.00,
+    price: 40.00
   },
   {
     id: 8,
     name: 'Drink',
     icon: 'img/drink.png',
-    price: 25.00,
+    price: 25.00
   }];
 
   var cart ={};

@@ -25,11 +25,12 @@ angular.module('app', ['ionic','firebase','ngCordova'])
 
 .factory("Auth", ["$firebaseAuth",
     function($firebaseAuth) {
-      var ref = new Firebase("https://kfcapp.firebaseio.com", "example3");
+      var ref = new Firebase("https://kfcapp.firebaseio.com");
       return $firebaseAuth(ref);
     }
 ])
 
+//Protecting routes
 .run(["$rootScope", "$state", function($rootScope, $state) {
   $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
     // We can catch the error thrown when the $requireAuth promise is rejected
@@ -67,6 +68,14 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/home.html',
           controller: "homeCtrl"
         }
+      },
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete
+          return Auth.$waitForAuth();
+        }]
       }
     })
 
@@ -77,6 +86,15 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/orders.html',
           controller: 'ordersCtrl'
         }
+      },
+      resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $requireAuth returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          return Auth.$requireAuth();
+        }]
       }
     })
 
@@ -87,6 +105,15 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/placeOrder.html',
           controller: 'placeOrderCtrl'
         }
+      },
+      resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $requireAuth returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          return Auth.$requireAuth();
+        }]
       }
     });
 

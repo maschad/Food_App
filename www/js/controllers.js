@@ -38,7 +38,7 @@ angular.module('app')
 
 })
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth) {
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth,currentAuth) {
   $scope.auth = Auth;
 
   $scope.auth.$onAuth(function(authData) {
@@ -66,7 +66,7 @@ angular.module('app')
 
   //User can Log out
   $scope.logout = function() {
-    AuthService.logout();
+    $scope.auth.$unauth();
     $state.go('login');
   };
 })
@@ -89,7 +89,7 @@ angular.module('app')
 
 })
 
-.controller('placeOrderCtrl',function($scope,$firebaseObject,$ionicPopup,Orders){
+.controller('placeOrderCtrl',function($scope,$firebaseObject,$ionicPopup,Orders,Auth){
   //Show all available orders for selection
   $scope.orders = Orders.all();
 
@@ -97,6 +97,10 @@ angular.module('app')
   $scope.addOrder = function(item){
     Orders.addOrder(item);
   };
+  $scope.placeOrder = function (cart,Auth)
+  {
+      return wholeCart(cart,Auth);
+  }
 
 })
 

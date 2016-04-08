@@ -1,10 +1,9 @@
 angular.module('app')
 
-.controller('loginCtrl', function($scope,$ionicPopup,$state,$firebaseAuth) {
+.controller('loginCtrl', function($scope,$ionicPopup,$state,Auth) {
   //controller for the login screen, calls the login in function passing the data and the assigns username variables
   $scope.login = function(username,password) {
-    var fbAuth = $firebaseAuth(fb);
-    fbAuth.$authWithPassword({
+    Auth.$authWithPassword({
         email:username,
         password:password
     }).then(function(authData) {
@@ -17,8 +16,7 @@ angular.module('app')
     });
   };
   $scope.register = function (username, password) {
-    var fbAuth = $firebaseAuth(fb);
-    fbAuth.$createUser({email:username,password:password}).then(function () {
+    Auth.$createUser({email:username,password:password}).then(function () {
       return fbAuth.$authWithPassword({
         email: username,
         password: password
@@ -40,7 +38,12 @@ angular.module('app')
 
 })
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation) {
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth) {
+  $scope.auth = Auth;
+
+  $scope.auth.$onAuth(function(authData) {
+    $scope.authData = authData;
+  });
 
   // Map stuff
   var options = {timeout: 10000, enableHighAccuracy: true};
@@ -86,32 +89,14 @@ angular.module('app')
 
 })
 
-.controller('placeOrderCtrl',function($scope,$firebaseObject,$ionicPopup){
+.controller('placeOrderCtrl',function($scope,$firebaseObject,$ionicPopup,Orders){
+  //Show all available orders for selection
+  $scope.orders = Orders.all();
 
-    $scope.list = function () {
-      fbAuth = fb.getAuth();
-      if(fbAuth) {
-        var syncObject = $firebaseObject(fb.child("users/" + fbAuth.uid));
-        syncObject.$bindTo($scope, "data");
-      }
-    };
-
-    $scope.create = function() {
-      $ionicPopup.prompt({
-          title: 'Enter a new TODO item',
-          inputType: 'text'
-        })
-        .then(function(result) {
-          if(result !== "") {
-            if($scope.data.hasOwnProperty("todos") !== true) {
-              $scope.data.todos = [];
-            }
-            $scope.data.todos.push({title: result});
-          } else {
-            console.log("Action not completed");
-          }
-        });
-    }
+  // When an order is selected add it my orders
+  $scope.addOrder = function(item){
+    Orders.addOrder(item);
+  };
 
 })
 

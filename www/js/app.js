@@ -5,10 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic','firebase','ngCordova'])
-  .constant('FirebaseUrl', 'https://kfcapp.firebaseio.com/')
-  .service('rootRef', ['FirebaseUrl', Firebase])
 
+var fb = null;// firebase variable
+angular.module('app', ['ionic','firebase','ngCordova'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,6 +19,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    fb = new Firebase('https://kfcapp.firebaseio.com');
   });
 })
 

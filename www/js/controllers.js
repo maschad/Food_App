@@ -71,11 +71,17 @@ angular.module('app')
   };
 })
 
-.controller('ordersCtrl', function($scope,Orders) {
+.controller('ordersCtrl', function($scope,$firebaseArray,Orders,Auth) {
   //To show Delete button
   $scope.data = {
     showDelete: false
   };
+
+  //Store the current user
+  $scope.currentUser = Auth;
+  $scope.currentUser.$onAuth(function(authData) {
+    $scope.authData = authData;
+  });
 
   //Deletes Items
   $scope.onItemDelete = function(item){
@@ -86,10 +92,21 @@ angular.module('app')
     //To edit Items
     $scope.edit = function(item) {
   };
+  $scope.placeOrder = function ()
+  {
+    var ref = new Firebase('https://kfcapp.firebaseio.com/');
+    var list = $firebaseArray(ref);
+    list.$add({cart:$scope.cart $scope.currentUser.uid}).then(function(ref) {
+      var id = ref.key();
+      console.log("added record with id " + id);
+      list.$indexFor(id); // returns location in the array
+    });
+    console.log('button pressed');
+  }
 
 })
 
-.controller('placeOrderCtrl',function($scope,$firebaseObject,$ionicPopup,Orders,Auth){
+.controller('placeOrderCtrl',function($scope,$ionicPopup,Orders){
   //Show all available orders for selection
   $scope.orders = Orders.all();
 
@@ -97,10 +114,6 @@ angular.module('app')
   $scope.addOrder = function(item){
     Orders.addOrder(item);
   };
-  $scope.placeOrder = function (cart,Auth)
-  {
-      return wholeCart(cart,Auth);
-  }
 
 })
 

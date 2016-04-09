@@ -1,15 +1,5 @@
 angular.module('app')
-
-.factory("wholeCart", function (cart,Auth) {
-  // create a new service based on $firebaseArray
-  var ref = new Firebase('https://kfcapp.firebaseio.com/');
-  var newChildRef = ref.push();
-  // we can get its id using key()
-  console.log('my new shiny id is '+newChildRef.key());
-  // now it is appended at the end of data at the server
-  newChildRef.set({cart: 'cart' + Auth.authData.uid});
-})
-
+  
 .factory('Orders',function() {
 
   var orders = [{

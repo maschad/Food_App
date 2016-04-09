@@ -71,17 +71,20 @@ angular.module('app')
   };
 })
 
-.controller('ordersCtrl', function($scope,$firebaseArray,Orders,Auth) {
+.controller('ordersCtrl', function($scope,$firebaseArray,$rootScope,Orders) {
   //To show Delete button
   $scope.data = {
     showDelete: false
   };
 
-  //Store the current user
-  $scope.currentUser = Auth;
-  $scope.currentUser.$onAuth(function(authData) {
-    $scope.authData = authData;
-  });
+  //return current user id
+  function getCurrentUser() {
+    var ref = new Firebase('https://kfcapp.firebaseio.com');
+    var authData = ref.getAuth();
+    $scope.user = authData.google.displayName;
+    return authData.uid;
+  }
+
 
   //Deletes Items
   $scope.onItemDelete = function(item){
@@ -94,14 +97,23 @@ angular.module('app')
   };
   $scope.placeOrder = function ()
   {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/');
+    var ref = new Firebase('https://kfcapp.firebaseio.com/' + getCurrentUser());
     var list = $firebaseArray(ref);
-    list.$add({cart:$scope.cart $scope.currentUser.uid}).then(function(ref) {
-      var id = ref.key();
-      console.log("added record with id " + id);
-      list.$indexFor(id); // returns location in the array
-    });
-    console.log('button pressed');
+    var order = {
+        cart: $scope.cart,
+        created: Date.now(),
+        user: $scope.user
+    };
+    if($scope.cart.total == 0) {
+      list.$add(order).then(function (ref) {
+        var id = ref.key();
+        console.log("added record with id " + id);
+        list.$indexFor(id); // returns location in the array
+      });
+      console.log('saved data');
+    }else{
+      $rootScope.notify('empty cart!');
+    }
   }
 
 })

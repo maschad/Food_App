@@ -39,6 +39,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
       $state.go('login');
     }
   });
+
 }])
 
 .config(function($stateProvider,$urlRouterProvider) {
@@ -115,7 +116,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           return Auth.$requireAuth();
         }]
       }
-    });
+    })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

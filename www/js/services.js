@@ -1,5 +1,5 @@
 angular.module('app')
-  
+
 .factory('Orders',function() {
 
   var orders = [{
@@ -89,8 +89,11 @@ angular.module('app')
         console.log("item deleted");
       }
     },
-    showOrders: function () {
+    getCart: function () {
       return cart;
+    },
+    clear: function () {
+      cart = null;
     }
   }
 });

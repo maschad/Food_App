@@ -71,7 +71,7 @@ angular.module('app')
   };
 })
 
-.controller('ordersCtrl', function($scope,$firebaseArray,$rootScope,Orders) {
+.controller('ordersCtrl', function($scope,$firebaseArray,Orders,$ionicPopup) {
   //To show Delete button
   $scope.data = {
     showDelete: false
@@ -90,10 +90,12 @@ angular.module('app')
   $scope.onItemDelete = function(item){
     Orders.removeOrder(item);
   };
-    //To display items
-    $scope.cart = Orders.showOrders();
-    //To edit Items
-    $scope.edit = function(item) {
+
+  //To display items
+  $scope.cart = Orders.getCart();
+
+  //To edit Items
+  $scope.edit = function(item) {
   };
   $scope.placeOrder = function ()
   {
@@ -104,15 +106,26 @@ angular.module('app')
         created: Date.now(),
         user: $scope.user
     };
-    if($scope.cart.total == 0) {
+    if($scope.cart.total != 0) {
       list.$add(order).then(function (ref) {
         var id = ref.key();
         console.log("added record with id " + id);
         list.$indexFor(id); // returns location in the array
+        //clear up orders
+        Orders.clear();
+        order = null;
+        //Pops over for success
+        var alertPopup = $ionicPopup.alert({
+          title: 'Success',
+          template: 'Order added successfully!'
+        });
       });
-      console.log('saved data');
     }else{
-      $rootScope.notify('empty cart!');
+      //alert for empty cart!
+      var alertPopup = $ionicPopup.alert({
+        title: 'Empty Cart!',
+        template: 'Please add an order!'
+      });
     }
   }
 

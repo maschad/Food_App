@@ -38,7 +38,7 @@ angular.module('app')
 
 })
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth,currentAuth) {
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth) {
   $scope.auth = Auth;
 
   $scope.auth.$onAuth(function(authData) {

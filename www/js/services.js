@@ -2,6 +2,10 @@ angular.module('app')
 
 .factory('Orders',function() {
 
+  var cart ={};
+  cart.items =[];
+  cart.total = 0;
+
   var orders = [{
     id: 0,
     name: 'Meal Deal',
@@ -57,13 +61,15 @@ angular.module('app')
     price: 25.00
   }];
 
-  var cart ={};
-  cart.items =[];
-  cart.total = 0;
 
   return {
     all: function () {
       return orders;
+    },
+    initialize:function () {
+      this.cart ={};
+      cart.items =[];
+      cart.total = 0;
     },
     remove: function (order) {
       orders.splice(orders.indexOf(order), 1);
@@ -93,7 +99,7 @@ angular.module('app')
       return cart;
     },
     clear: function () {
-      cart = null;
+      cart = {};
     }
   }
 });

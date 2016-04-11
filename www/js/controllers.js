@@ -111,14 +111,14 @@ angular.module('app')
         var id = ref.key();
         console.log("added record with id " + id);
         list.$indexFor(id); // returns location in the array
-        //clear up orders
-        Orders.clear();
-        order = null;
         //Pops over for success
         var alertPopup = $ionicPopup.alert({
           title: 'Success',
           template: 'Order added successfully!'
         });
+        //clear up orders
+        Orders.initialize();
+        Orders.getCart();
       });
     }else{
       //alert for empty cart!

@@ -8,7 +8,7 @@
 
 var fb = null;// firebase variable
 
-angular.module('app', ['ionic','firebase','ngCordova','angularGeoFire'])
+angular.module('app', ['ionic','firebase','ngCordova'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

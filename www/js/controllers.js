@@ -89,18 +89,15 @@ angular.module('app')
 })
 
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,$geofire, Auth) {
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation, Auth) {
   $scope.auth = Auth;
 
   $scope.auth.$onAuth(function(authData) {
     $scope.authData = authData;
   });
-  
 
-  //Angular Geo fire stuff
-  var $geo = $geofire(new Firebase('https://kfcapp.firebaseio.com/'));
-
-  // Find KFC Locations
+  //Array to store results
+  $scope.searchResults = [];
 
   // Map stuff
   var options = {timeout: 10000, enableHighAccuracy: true};
@@ -123,17 +120,30 @@ angular.module('app')
       var marker = new google.maps.Marker({
         map: $scope.map,
         animation: google.maps.Animation.DROP,
-        position: latLng
+        position: latLng,
+        draggable: true
       });
       var infoWindow = new google.maps.InfoWindow({
         content: "Here I am!"
       });
 
-      google.maps.event.addListener(marker, 'click', function () {
+      google.maps.event.addListener(marker, 'dragend', function (evt) {
         infoWindow.open($scope.map, marker);
+        console.log('Current latitude',evt.latLng.lat(),'Current Longitude:',evt.latLng.lng());
       });
 
     });
+    //Store user location
+    $scope.user = {};
+
+    $scope.saveDetails = function(){
+      var lat = $scope.user.latitude;
+      var lgt = $scope.user.longitude;
+      var des = $scope.user.desc;
+
+      // Code to write to Firebase will be here
+    }
+
 
   }, function(error){
     console.log("Could not get location");

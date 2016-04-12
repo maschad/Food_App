@@ -104,8 +104,10 @@ angular.module('app')
 
   $cordovaGeolocation.getCurrentPosition(options).then(function(position){
 
+    //my current latitude
     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
+    // map options
     var mapOptions = {
       center: latLng,
       zoom: 15,
@@ -113,27 +115,51 @@ angular.module('app')
     };
 
     $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    //Set my location
+    var me = new google.maps.Marker({
+      position: latLng,
+      map: $scope.map,
+      draggable: true
+    });
 
-    //Wait until the map is loaded
+      //Wait until the map is loaded
     google.maps.event.addListenerOnce($scope.map, 'idle', function(){
 
-      var marker = new google.maps.Marker({
-        map: $scope.map,
-        animation: google.maps.Animation.DROP,
-        position: latLng,
-        draggable: true
-      });
-      var infoWindow = new google.maps.InfoWindow({
-        content: "Here I am!"
-      });
+      // Get current location
+      var request = {
+        location: latLng,
+        radius: 500,
+        name: ['kfc']
+      };
+      var service = new google.maps.places.PlacesService($scope.map);
+      service.nearbySearch(request,callback);
 
+      function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            var place = results[i];
+            createMarker(results[i]);
+          }
+        }
+      }
+      function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: $scope.map,
+          position: place.geometry.location
+        });
+      }
+
+      var infoWindow = new google.maps.InfoWindow();
       google.maps.event.addListener(marker, 'dragend', function (evt) {
         infoWindow.open($scope.map, marker);
-        console.log('Current latitude',evt.latLng.lat(),'Current Longitude:',evt.latLng.lng());
+        infoWindow.setContent(place.name);
       });
-
     });
-    //Store user location
+
+    /** #TODO:
+    Firebase save
+    Store user location
     $scope.user = {};
 
     $scope.saveDetails = function(){
@@ -143,7 +169,7 @@ angular.module('app')
 
       // Code to write to Firebase will be here
     }
-
+  **/
 
   }, function(error){
     console.log("Could not get location");

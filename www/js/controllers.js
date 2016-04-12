@@ -15,18 +15,6 @@ angular.module('app')
       });
     });
   };
-  $scope.register = function (username, password) {
-    Auth.$createUser({email:username,password:password}).then(function () {
-      return fbAuth.$authWithPassword({
-        email: username,
-        password: password
-        });
-      }).then(function (authData) {
-        $state.go('tabs.home', {}, {reload: true});
-      }).catch(function (error) {
-        console.error("ERROR " + error);
-      });
-  };
 
   //Google login
   $scope.loginWithGoogle = function(){
@@ -37,13 +25,81 @@ angular.module('app')
   }
 
 })
+
+
+  //Registeration Controller
+.controller('registerCtrl', function ($scope,$state,$ionicLoading,Auth) {
+  $scope.user = {
+    email: "",
+    password: ""
+  };
+
+  $scope.auth = Auth;
+
+  $scope.show = function() {
+    $ionicLoading.show({
+      template: 'Please Wait... Registering',
+      animation:'fade-in',
+      showBackdrop:true
+    });
+  };
+  $scope.hide = function(){
+    $ionicLoading.hide();
+  };
+
+  $scope.createUser = function () {
+    var email = this.user.email;
+    var password = this.user.password;
+
+    if (!email || !password) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Sign up failed!',
+        template: 'Please check your credentials!'
+      });
+      return false;
+    }
+    $scope.show();
+    $scope.auth.$createUser(email,password,function (error,user) {
+        if(!error){
+          $scope.hide();
+          $scope.auth.$authWithPassword(email,password);
+          $state.go('tabs.home');
+        }
+        else {
+          $state.hide();
+          if (error.code == 'INVALID_EMAIL') {
+            var alertPopup = $ionicPopup.alert({
+              title:'Invalid Email Address'
+            });
+          }
+          else if (error.code == 'EMAIL_TAKEN') {
+            var alertPopup = $ionicPopup.alert({
+              title:'Email Address already taken'
+            });
+          }
+          else {
+            var alertPopup = $ionicPopup.alert({
+              title:'Something went Wrong :('
+            });
+          }
+        }
+    })
+  }
+
+})
+
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,Auth) {
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation,$geofire, Auth) {
   $scope.auth = Auth;
 
   $scope.auth.$onAuth(function(authData) {
     $scope.authData = authData;
   });
+
+  //Angular Geo fire stuff
+  var $geo = $geofire(new Firebase('https://kfcapp.firebaseio.com/'));
+
+  // Find KFC Locations
 
   // Map stuff
   var options = {timeout: 10000, enableHighAccuracy: true};
@@ -60,9 +116,29 @@ angular.module('app')
 
     $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
+    //Wait until the map is loaded
+    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
+
+      var marker = new google.maps.Marker({
+        map: $scope.map,
+        animation: google.maps.Animation.DROP,
+        position: latLng
+      });
+      var infoWindow = new google.maps.InfoWindow({
+        content: "Here I am!"
+      });
+
+      google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.open($scope.map, marker);
+      });
+
+    });
+
   }, function(error){
     console.log("Could not get location");
   });
+
+
 
   //User can Log out
   $scope.logout = function() {

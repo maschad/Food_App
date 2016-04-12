@@ -8,5 +8,9 @@
   },
   "dependencies": {
     "geofire": "^4.0.0"
+  },
+  "resolutions": {
+    "geofire": "^4.0.0",
+    "angular": "1.2 - 1.5"
   }
 }

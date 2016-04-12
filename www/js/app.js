@@ -54,6 +54,12 @@ angular.module('app', ['ionic','firebase','ngCordova'])
       templateUrl: 'templates/login.html',
       controller: 'loginCtrl'
     })
+    
+    .state('SignUp',{
+      url:'/signup',
+      templateUrl:'templates/signUp.html',
+      controller: 'registerCtrl'
+    })
 
     //Route to home page
     .state('tabs', {

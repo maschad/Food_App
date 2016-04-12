@@ -8,7 +8,7 @@
 
 var fb = null;// firebase variable
 
-angular.module('app', ['ionic','firebase','ngCordova'])
+angular.module('app', ['ionic','firebase','ngCordova','angularGeoFire'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -54,7 +54,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
       templateUrl: 'templates/login.html',
       controller: 'loginCtrl'
     })
-    
+
     .state('SignUp',{
       url:'/signup',
       templateUrl:'templates/signUp.html',

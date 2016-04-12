@@ -95,6 +95,7 @@ angular.module('app')
   $scope.auth.$onAuth(function(authData) {
     $scope.authData = authData;
   });
+  
 
   //Angular Geo fire stuff
   var $geo = $geofire(new Firebase('https://kfcapp.firebaseio.com/'));
@@ -148,6 +149,7 @@ angular.module('app')
 })
 
 .controller('ordersCtrl', function($scope,$firebaseArray,Orders,$ionicPopup) {
+
   //To show Delete button
   $scope.data = {
     showDelete: false

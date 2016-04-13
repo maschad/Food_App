@@ -118,6 +118,12 @@ angular.module('app')
     var infoWindow = new google.maps.InfoWindow();
 
     $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    //Display for directions
+    var directionsDisplay = new google.maps.DirectionsRenderer({
+      draggable: true,
+      map: $scope.map,
+      panel: document.getElementById('right-panel')
+    });
     //Set my location
     var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
     var me = new google.maps.Marker({
@@ -158,18 +164,16 @@ angular.module('app')
           infoWindow.open($scope.map, marker);
           infoWindow.setContent(place.name);
           var directionsService = new google.maps.DirectionsService;
-          var directionsDisplay = new google.maps.DirectionsRenderer;
           directionsService.route({
             origin: me.position,
             destination: marker.position,
-            travelMode: google.maps.TravelMode.DRIVING
+            travelMode: google.maps.TravelMode.DRIVING,
           }, function(response, status) {
             if (status === google.maps.DirectionsStatus.OK) {
               directionsDisplay.setDirections(response);
             } else {
               window.alert('Directions request failed due to ' + status);
             }
-          directionsDisplay.setMap($scope.map);
           });
         });
       }

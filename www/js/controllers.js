@@ -114,12 +114,18 @@ angular.module('app')
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    // Needed for info
+    var infoWindow = new google.maps.InfoWindow();
+
     $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
     //Set my location
+    var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
     var me = new google.maps.Marker({
       position: latLng,
       map: $scope.map,
-      draggable: true
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      icon: image
     });
 
       //Wait until the map is loaded
@@ -148,11 +154,27 @@ angular.module('app')
           map: $scope.map,
           position: place.geometry.location
         });
+        google.maps.event.addListener(marker, 'click', function () {
+          infoWindow.open($scope.map, marker);
+          infoWindow.setContent(place.name);
+          var directionsService = new google.maps.DirectionsService;
+          var directionsDisplay = new google.maps.DirectionsRenderer;
+          directionsService.route({
+            origin: me.position,
+            destination: marker.position,
+            travelMode: google.maps.TravelMode.DRIVING
+          }, function(response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+              directionsDisplay.setDirections(response);
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+          directionsDisplay.setMap($scope.map);
+          });
+        });
       }
-
-      var infoWindow = new google.maps.InfoWindow();
-      google.maps.event.addListener(marker, 'dragend', function (evt) {
-        infoWindow.open($scope.map, marker);
+      google.maps.event.addListener(me, 'click', function () {
+        infoWindow.open($scope.map, me);
         infoWindow.setContent(place.name);
       });
     });

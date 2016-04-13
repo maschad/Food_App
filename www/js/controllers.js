@@ -114,16 +114,12 @@ angular.module('app')
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    // Needed for info
+    // Needed for info for marker
     var infoWindow = new google.maps.InfoWindow();
 
+    //The actual map
     $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-    //Display for directions
-    var directionsDisplay = new google.maps.DirectionsRenderer({
-      draggable: true,
-      map: $scope.map,
-      panel: document.getElementById('right-panel')
-    });
+
     //Set my location
     var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
     var me = new google.maps.Marker({
@@ -137,15 +133,18 @@ angular.module('app')
       //Wait until the map is loaded
     google.maps.event.addListenerOnce($scope.map, 'idle', function(){
 
-      // Get current location
+      //Request for nearby kfc
       var request = {
         location: latLng,
         radius: 500,
         name: ['kfc']
       };
+
+      //Find KFC's using places Service
       var service = new google.maps.places.PlacesService($scope.map);
       service.nearbySearch(request,callback);
 
+      //callback function to list results and createMarkers
       function callback(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
           for (var i = 0; i < results.length; i++) {
@@ -154,32 +153,38 @@ angular.module('app')
           }
         }
       }
+      //Create markers function
       function createMarker(place) {
         var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
           map: $scope.map,
           position: place.geometry.location
         });
+        //Listener for the marker
         google.maps.event.addListener(marker, 'click', function () {
+          //if marker is clicked, get directions
           infoWindow.open($scope.map, marker);
           infoWindow.setContent(place.name);
           var directionsService = new google.maps.DirectionsService;
+          var directionsDisplay = new google.maps.DirectionsRenderer();
+          //Calculate the route
           directionsService.route({
             origin: me.position,
             destination: marker.position,
-            travelMode: google.maps.TravelMode.DRIVING,
+            travelMode: google.maps.TravelMode.DRIVING
           }, function(response, status) {
             if (status === google.maps.DirectionsStatus.OK) {
               directionsDisplay.setDirections(response);
+              directionsDisplay.setMap($scope.map);
             } else {
               window.alert('Directions request failed due to ' + status);
             }
           });
         });
       }
+      //Marker listener for MY location
       google.maps.event.addListener(me, 'click', function () {
         infoWindow.open($scope.map, me);
-        infoWindow.setContent(place.name);
       });
     });
 

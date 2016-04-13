@@ -14,11 +14,6 @@
             </form>
             <button class="button button-stable button-block ">See specials</button>
             <button class="button button-dark icon ion-android-locate" ng-click="showMap=!showMap">Find nearest Restaraunt</button>
-            <div ng-show="showMap">
-              <div id="map" data-tap-disabled="true"></div>
-              <div id="right-panel">
-                <p>Total Distance: <span id="total"></span></p>
-              </div>
-            </div>
+            <div ng-show="showMap" id="map" data-tap-disabled="true"></div>
         </ion-content>
 </ion-view>

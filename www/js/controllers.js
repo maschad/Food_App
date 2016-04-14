@@ -28,13 +28,10 @@ angular.module('app')
 
 
   //Registeration Controller
-.controller('registerCtrl', function ($scope,$state,$ionicLoading,Auth) {
-  $scope.user = {
-    email: "",
-    password: ""
-  };
+.controller('registerCtrl', function ($scope,$state,$ionicLoading,$ionicPopup,$firebase) {
 
-  $scope.auth = Auth;
+  //Firebase ref
+  var ref = new Firebase('https://kfcapp.firebaseio.com/users');
 
   $scope.show = function() {
     $ionicLoading.show({
@@ -47,26 +44,32 @@ angular.module('app')
     $ionicLoading.hide();
   };
 
-  $scope.createUser = function () {
-    var email = this.user.email;
-    var password = this.user.password;
+  $scope.createUser = function (email,password,name) {
+
+    //Create User object
+    var user = {
+      email:email,
+      password:password,
+      name: name
+    };
 
     if (!email || !password) {
       var alertPopup = $ionicPopup.alert({
         title: 'Sign up failed!',
-        template: 'Please check your credentials!'
+        template: 'Please check  fields!'
       });
       return false;
     }
     $scope.show();
-    $scope.auth.$createUser(email,password,function (error,user) {
+    ref.createUser(user,function (error,userData) {
         if(!error){
           $scope.hide();
-          $scope.auth.$authWithPassword(email,password);
+          createProfile(userData,user);
+          ref.authWithPassword(email,password);
           $state.go('tabs.home');
         }
         else {
-          $state.hide();
+          $scope.hide();
           if (error.code == 'INVALID_EMAIL') {
             var alertPopup = $ionicPopup.alert({
               title:'Invalid Email Address'
@@ -83,7 +86,12 @@ angular.module('app')
             });
           }
         }
-    })
+    });
+
+    function createProfile(userData, user) {
+      var profileRef = $firebase(ref.child('profile'));
+      return profileRef.$set(authData.uid, user);
+    }
   }
 
 })
@@ -96,8 +104,6 @@ angular.module('app')
     $scope.authData = authData;
   });
 
-  //Array to store results
-  $scope.searchResults = [];
 
   // Map stuff
   var options = {timeout: 10000, enableHighAccuracy: true};
@@ -224,7 +230,7 @@ angular.module('app')
 
   //return current user id
   function getCurrentUser() {
-    var ref = new Firebase('https://kfcapp.firebaseio.com');
+    var ref = new Firebase('https://kfcapp.firebaseio.com/users');
     var authData = ref.getAuth();
     $scope.user = authData.google.displayName;
     return authData.uid;
@@ -244,7 +250,7 @@ angular.module('app')
   };
   $scope.placeOrder = function ()
   {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/' + getCurrentUser());
+    var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
     var list = $firebaseArray(ref);
     var order = {
         cart: $scope.cart,
@@ -254,7 +260,6 @@ angular.module('app')
     if($scope.cart.total != 0) {
       list.$add(order).then(function (ref) {
         var id = ref.key();
-        console.log("added record with id " + id);
         list.$indexFor(id); // returns location in the array
         //Pops over for success
         var alertPopup = $ionicPopup.alert({

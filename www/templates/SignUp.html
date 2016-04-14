@@ -6,17 +6,22 @@
     <div class="list">
       <label class="item item-input">
         <span class="input-label">Email</span>
-        <input type="email" ng-model="user.email">
+        <input type="email" ng-model="user.email" required>
       </label>
       <label class="item item-input">
         <span class="input-label">Password</span>
-        <input type="password" ng-model="user.password">
+        <input type="password" ng-model="user.password" required>
       </label>
       <label class="item item-input">
-        <button class="button button-block button-positive" ng-click="createUser()">
+        <span class="input-label">Name</span>
+        <input type="text" ng-model="user.name" required>
+      </label>
+      <label class="item item-input">
+        <button class="button button-block button-positive" ng-click="createUser(user.email,user.password,user.name)">
           Sign Up
         </button>
       </label>
+      <a class="button button-positive button-clear button-block " ng-href="#/login">Already have an account?</a>
     </div>
   </ion-content>
 </ion-view>

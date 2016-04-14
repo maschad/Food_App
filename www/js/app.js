@@ -25,7 +25,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
 
 .factory("Auth", ["$firebaseAuth",
     function($firebaseAuth) {
-      var ref = new Firebase("https://kfcapp.firebaseio.com");
+      var ref = new Firebase("https://kfcapp.firebaseio.com/users");
       return $firebaseAuth(ref);
     }
 ])

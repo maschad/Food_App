@@ -251,10 +251,10 @@ angular.module('app')
   $scope.placeOrder = function ()
   {
     var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
-    var list = $firebaseArray(ref);
+    var list = $firebaseArray(ref.child('orders'));
     var order = {
         cart: $scope.cart,
-        created: Date.now(),
+        created: new Date().toString(),
         user: $scope.user
     };
     if($scope.cart.total != 0) {

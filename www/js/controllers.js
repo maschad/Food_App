@@ -162,6 +162,7 @@ angular.module('app')
       //Create markers function
       function createMarker(place) {
         var placeLoc = place.geometry.location;
+        console.log('creating marker');
         var marker = new google.maps.Marker({
           map: $scope.map,
           position: place.geometry.location
@@ -228,14 +229,6 @@ angular.module('app')
     showDelete: false
   };
 
-  //return current user id
-  function getCurrentUser() {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/users');
-    var authData = ref.getAuth();
-    $scope.user = authData.google.displayName;
-    return authData.uid;
-  }
-
 
   //Deletes Items
   $scope.onItemDelete = function(item){
@@ -248,36 +241,8 @@ angular.module('app')
   //To edit Items
   $scope.edit = function(item) {
   };
-  $scope.placeOrder = function ()
-  {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
-    var list = $firebaseArray(ref.child('orders'));
-    var order = {
-        cart: $scope.cart,
-        created: new Date().toString(),
-        user: $scope.user
-    };
-    if($scope.cart.total != 0) {
-      list.$add(order).then(function (ref) {
-        var id = ref.key();
-        list.$indexFor(id); // returns location in the array
-        //Pops over for success
-        var alertPopup = $ionicPopup.alert({
-          title: 'Success',
-          template: 'Order added successfully!'
-        });
-        //clear up orders
-        Orders.initialize();
-        Orders.getCart();
-      });
-    }else{
-      //alert for empty cart!
-      var alertPopup = $ionicPopup.alert({
-        title: 'Empty Cart!',
-        template: 'Please add an order!'
-      });
-    }
-  }
+
+
 
 })
 

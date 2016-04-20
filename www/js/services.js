@@ -2,9 +2,22 @@ angular.module('app')
 
 .factory('Orders',function() {
 
-  var cart ={};
-  cart.items =[];
-  cart.total = 0;
+  //return current user id
+  function getCurrentUser() {
+    var ref = new Firebase('https://kfcapp.firebaseio.com/users');
+    var authData = ref.getAuth();
+    $scope.user = authData.google.displayName;
+    return authData.uid;
+  }
+
+  var Order = function () {
+    var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
+    var list = $firebaseArray(ref.child('orders'));
+    var cart = {};
+    cart.items = [];
+    cart.total = 0;
+  };
+
 
   var orders = [{
     id: 0,
@@ -97,6 +110,33 @@ angular.module('app')
     },
     getCart: function () {
       return cart;
+    },
+    placeOrder : function () {
+      var toStore = {
+        cart: cart,
+        created: new Date().toString(),
+        user: user
+      };
+      if($scope.cart.total != 0) {
+        list.$add(order).then(function (ref) {
+          var id = ref.key();
+          list.$indexFor(id); // returns location in the array
+          //Pops over for success
+          var alertPopup = $ionicPopup.alert({
+            title: 'Success',
+            template: 'Order added successfully!'
+          });
+          //clear up orders
+          Orders.initialize();
+          Orders.getCart();
+        });
+      }else{
+        //alert for empty cart!
+        var alertPopup = $ionicPopup.alert({
+          title: 'Empty Cart!',
+          template: 'Please add an order!'
+        });
+      }
     },
     clear: function () {
       cart = {};

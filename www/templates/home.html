@@ -3,9 +3,7 @@
         <button class="button icon-left ion-log-out button-stable" ng-click="logout()">Logout</button>
       </ion-nav-buttons>
         <ion-content padding="true" class="has-header">
-          <div ng-show="authData">
-            <p>Hello, {{authData.google.displayName}}</p>
-          </div>
+            <p>Hello, {{name}}</p>
             <form class="list">
                 <label class="item item-input" name="Search">
                     <i class="icon ion-search placeholder-icon"></i>

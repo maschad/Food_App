@@ -2,33 +2,51 @@ angular.module('app')
 
 .factory("Auth", function($firebaseAuth) {
     var ref = new Firebase("https://kfcapp.firebaseio.com/users");
-    return $firebaseAuth(ref);
+    var type = null;
+
+    return {
+      getAuth : function () {
+        return $firebaseAuth(ref);
+      },
+      setType : function (typ) {
+        type = typ;
+      },
+      getType : function () {
+        return type;
+      }
+    }
   }
 )
 
 .factory('Customer', function (Auth) {
+    var authRef=  Auth.getAuth();
+    var  authData = authRef.$getAuth();
+    var uid = authData.uid;
+
     return{
-      getUID : function () {
-        var authData =  Auth.$getAuth();
-        return authData.uid;
-      }
+        getCustomerID : function () {
+          return uid;
+        },
+        getCustomerName : function () {
+          if(Auth.getType() == 'google'){
+            return authData.google.displayName;
+          }
+        },
+        logout : function () {
+          authRef.$unauth();
+        }
     }
 })
 
 .factory('Order',function($firebaseArray,Customer) {
   //variables
   //retrieve current customer on initialization
-  var user = getCurrentUser();
+  var user = Customer.getCustomerID();
   var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + user);
   var list = $firebaseArray(ref.child('orders'));
   var cart = {};
   cart.items = [];
   cart.total = 0;
-
-  //return current user id - private function
-  function getCurrentUser() {
-    return Customer.getUID();
-  }
 
   //all possible Orders
   var orders = [{

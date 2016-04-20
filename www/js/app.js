@@ -22,7 +22,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
     }
   });
 })
-  
+
 //Protecting routes
 .run(["$rootScope", "$state", function($rootScope, $state) {
   $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
@@ -68,14 +68,6 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/home.html',
           controller: "homeCtrl"
         }
-      },
-      resolve: {
-        // controller will not be loaded until $waitForAuth resolves
-        // Auth refers to our $firebaseAuth wrapper in the example above
-        "currentAuth": ["Auth", function(Auth) {
-          // $waitForAuth returns a promise so the resolve waits for it to complete
-          return Auth.$waitForAuth();
-        }]
       }
     })
 
@@ -86,15 +78,6 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/cartScreen.html',
           controller: 'cartCtrl'
         }
-      },
-      resolve: {
-        // controller will not be loaded until $requireAuth resolves
-        // Auth refers to our $firebaseAuth wrapper in the example above
-        "currentAuth": ["Auth", function(Auth) {
-          // $requireAuth returns a promise so the resolve waits for it to complete
-          // If the promise is rejected, it will throw a $stateChangeError (see above)
-          return Auth.$requireAuth();
-        }]
       }
     })
 
@@ -105,15 +88,6 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/orderScreen.html',
           controller: 'orderScreenCtrl'
         }
-      },
-      resolve: {
-        // controller will not be loaded until $requireAuth resolves
-        // Auth refers to our $firebaseAuth wrapper in the example above
-        "currentAuth": ["Auth", function(Auth) {
-          // $requireAuth returns a promise so the resolve waits for it to complete
-          // If the promise is rejected, it will throw a $stateChangeError (see above)
-          return Auth.$requireAuth();
-        }]
       }
     });
 

@@ -3,7 +3,8 @@ angular.module('app')
 .controller('loginCtrl', function($scope,$ionicPopup,$state,Auth) {
   //controller for the login screen, calls the login in function passing the data and the assigns username variables
   $scope.login = function(username,password) {
-    Auth.$authWithPassword({
+    var toAuth = Auth.getAuth();
+    toAuth.$authWithPassword({
         email:username,
         password:password
     }).then(function(authData) {
@@ -18,9 +19,13 @@ angular.module('app')
 
   //Google login
   $scope.loginWithGoogle = function(){
-    Auth.$authWithOAuthPopup('google')
+    var toAuth = Auth.getAuth();
+    toAuth.$authWithOAuthPopup('google')
       .then(function(authData) {
+        Auth.setType('google');
         $state.go('tabs.home');
+      }, function (err) {
+          console.log(err);
       });
   }
 
@@ -97,12 +102,9 @@ angular.module('app')
 })
 
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation, Auth) {
-  $scope.auth = Auth;
-
-  $scope.auth.$onAuth(function(authData) {
-    $scope.authData = authData;
-  });
+.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation, Customer) {
+  //Storing the customer name
+  $scope.name = Customer.getCustomerName();
 
 
   // Map stuff
@@ -217,7 +219,7 @@ angular.module('app')
 
   //User can Log out
   $scope.logout = function() {
-    $scope.auth.$unauth();
+    Customer.logout();
     $state.go('login');
   };
 })

@@ -1,8 +1,25 @@
 angular.module('app')
 
-.factory('Order',function($firebaseArray) {
+.factory("Auth", function($firebaseAuth) {
+    var ref = new Firebase("https://kfcapp.firebaseio.com/users");
+    return $firebaseAuth(ref);
+  }
+)
+
+.factory('Customer', function (Auth) {
+    return{
+      getUID : function () {
+        var authData =  Auth.$getAuth();
+        return authData.uid;
+      }
+    }
+})
+
+.factory('Order',function($firebaseArray,Customer) {
   //variables
-  var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
+  //retrieve current customer on initialization
+  var user = getCurrentUser();
+  var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + user);
   var list = $firebaseArray(ref.child('orders'));
   var cart = {};
   cart.items = [];
@@ -10,9 +27,7 @@ angular.module('app')
 
   //return current user id - private function
   function getCurrentUser() {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/users');
-    var authData = ref.getAuth();
-    return authData.uid;
+    return Customer.getUID();
   }
 
   //all possible Orders
@@ -118,7 +133,7 @@ angular.module('app')
       var toStore = {
         cart: cart,
         created: new Date().toString(),
-        user: getCurrentUser()
+        user: user
       };
       if (cart.total != 0) {
         list.$add(toStore).then(function (ref) {

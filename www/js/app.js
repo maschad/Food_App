@@ -22,14 +22,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
     }
   });
 })
-
-.factory("Auth", ["$firebaseAuth",
-    function($firebaseAuth) {
-      var ref = new Firebase("https://kfcapp.firebaseio.com/users");
-      return $firebaseAuth(ref);
-    }
-])
-
+  
 //Protecting routes
 .run(["$rootScope", "$state", function($rootScope, $state) {
   $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {

@@ -222,37 +222,63 @@ angular.module('app')
   };
 })
 
-.controller('ordersCtrl', function($scope,$firebaseArray,Orders,$ionicPopup) {
+.controller('cartCtrl', function($scope, $ionicPopup,Order) {
 
   //To show Delete button
   $scope.data = {
     showDelete: false
   };
 
+  //instantiate Order object
+  var order = new Order();
+
+  //to Place an order
+  $scope.place = function () {
+    //if successful
+    if(order.placeOrder){
+      //Pops over for success
+      var alertPopup = $ionicPopup.alert({
+        title: 'Success',
+        template: 'Order added successfully!'
+      });
+      //clear up orders
+      order.initialize;
+      order.getCart;
+    } else{
+    //alert for empty cart!
+    var alertPopup = $ionicPopup.alert({
+      title: 'Empty Cart!',
+      template: 'Please add an order!'
+    });
+  }
+
+  };
 
   //Deletes Items
   $scope.onItemDelete = function(item){
-    Orders.removeOrder(item);
+    order.removeOrder(item);
   };
 
   //To display items
-  $scope.cart = Orders.getCart();
+  $scope.cart = order.getCart;
 
   //To edit Items
   $scope.edit = function(item) {
   };
 
-
-
 })
 
-.controller('placeOrderCtrl',function($scope,$ionicPopup,Orders){
+.controller('orderScreenCtrl',function($scope,$ionicPopup,Order){
+
+  //instantiate Order object
+  var order = new Order();
+
   //Show all available orders for selection
-  $scope.orders = Orders.all();
+  $scope.orders = order.all;
 
   // When an order is selected add it my orders
   $scope.addOrder = function(item){
-    Orders.addOrder(item);
+    order.addOrder(item);
   };
 
 })

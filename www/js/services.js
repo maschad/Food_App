@@ -1,14 +1,13 @@
 angular.module('app')
 
-.factory('Orders',function() {
+.factory('Order',function($firebaseArray) {
 
   //return current user id
   function getCurrentUser() {
     var ref = new Firebase('https://kfcapp.firebaseio.com/users');
     var authData = ref.getAuth();
-    $scope.user = authData.google.displayName;
     return authData.uid;
-  }
+  };
 
   var Order = function () {
     var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
@@ -75,73 +74,70 @@ angular.module('app')
   }];
 
 
-  return {
-    all: function () {
-      return orders;
-    },
-    initialize:function () {
-      this.cart ={};
-      cart.items =[];
-      cart.total = 0;
-    },
-    remove: function (order) {
-      orders.splice(orders.indexOf(order), 1);
-    },
-    get: function (orderId) {
-      for (var i = 0; i < orders.length; i++) {
-        if (orders[i].id == parseInt(orderId)) {
-          return orders[i];
-        }
-      }
-      return null;
-    },
-    addOrder:function(item){
-      cart.items.push(item);
-      cart.total = parseFloat(cart.total) + parseFloat(item.price);
+  Order.all = function () {
+    return orders;
+  };
 
-    },
-    removeOrder:function(item){
-      var index = cart.items.indexOf(item);
-      if (index >= 0) {
-        cart.total = parseFloat(cart.total) - parseFloat(cart.items[index].price);
-        cart.items.splice(index, 1);
-        console.log("item deleted");
+  Order.initialize = function () {
+    this.cart ={};
+    cart.items =[];
+    cart.total = 0;
+  };
+
+  Order.remove = function (order) {
+    orders.splice(orders.indexOf(order), 1);
+  };
+
+  Order.get = function (orderId) {
+    for (var i = 0; i < orders.length; i++) {
+      if (orders[i].id == parseInt(orderId)) {
+        return orders[i];
       }
-    },
-    getCart: function () {
-      return cart;
-    },
-    placeOrder : function () {
-      var toStore = {
-        cart: cart,
-        created: new Date().toString(),
-        user: user
-      };
-      if($scope.cart.total != 0) {
-        list.$add(order).then(function (ref) {
-          var id = ref.key();
-          list.$indexFor(id); // returns location in the array
-          //Pops over for success
-          var alertPopup = $ionicPopup.alert({
-            title: 'Success',
-            template: 'Order added successfully!'
-          });
-          //clear up orders
-          Orders.initialize();
-          Orders.getCart();
-        });
-      }else{
-        //alert for empty cart!
-        var alertPopup = $ionicPopup.alert({
-          title: 'Empty Cart!',
-          template: 'Please add an order!'
-        });
-      }
-    },
-    clear: function () {
-      cart = {};
     }
-  }
+    return null;
+  };
+
+  Order.addOrder = function(item){
+    cart.items.push(item);
+    cart.total = parseFloat(cart.total) + parseFloat(item.price);
+
+  };
+
+  Order.removeOrder = function(item){
+    var index = cart.items.indexOf(item);
+    if (index >= 0) {
+      cart.total = parseFloat(cart.total) - parseFloat(cart.items[index].price);
+      cart.items.splice(index, 1);
+      console.log("item deleted");
+    }
+  };
+
+  Order.getCart = function () {
+    return cart;
+  };
+
+  Order.placeOrder = function () {
+    var toStore = {
+      cart: cart,
+      created: new Date().toString(),
+      user: user
+    };
+    if(cart.total != 0) {
+      list.$add(order).then(function (ref) {
+        var id = ref.key();
+        list.$indexFor(id); // returns location in the array
+        return true;
+      })
+    }else{
+      return false;
+    }
+  };
+
+  Order.clear = function () {
+    cart = {};
+  };
+
+  return Order;
 });
 
 

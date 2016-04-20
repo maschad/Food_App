@@ -87,11 +87,11 @@ angular.module('app', ['ionic','firebase','ngCordova'])
     })
 
     .state('tabs.orders', {
-      url: '/orders',
+      url: '/cartScreen',
       views: {
-        'orders-tab': {
-          templateUrl: 'templates/orders.html',
-          controller: 'ordersCtrl'
+        'cartScreen-tab': {
+          templateUrl: 'templates/cartScreen.html',
+          controller: 'cartCtrl'
         }
       },
       resolve: {
@@ -106,11 +106,11 @@ angular.module('app', ['ionic','firebase','ngCordova'])
     })
 
     .state('tabs.placeOrder', {
-      url:'/placeorder',
+      url:'/orderScreen',
       views:{
-        'placeorder-tab':{
-          templateUrl: 'templates/placeOrder.html',
-          controller: 'placeOrderCtrl'
+        'orderScreen-tab':{
+          templateUrl: 'templates/orderScreen.html',
+          controller: 'orderScreenCtrl'
         }
       },
       resolve: {
@@ -122,7 +122,7 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           return Auth.$requireAuth();
         }]
       }
-    })
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

@@ -229,21 +229,19 @@ angular.module('app')
     showDelete: false
   };
 
-  //instantiate Order object
-  var order = new Order();
 
   //to Place an order
   $scope.place = function () {
     //if successful
-    if(order.placeOrder){
+    if(Order.placeOrder()){
       //Pops over for success
       var alertPopup = $ionicPopup.alert({
         title: 'Success',
         template: 'Order added successfully!'
       });
       //clear up orders
-      order.initialize;
-      order.getCart;
+      Order.initialize();
+      Order.getCart();
     } else{
     //alert for empty cart!
     var alertPopup = $ionicPopup.alert({
@@ -256,11 +254,11 @@ angular.module('app')
 
   //Deletes Items
   $scope.onItemDelete = function(item){
-    order.removeOrder(item);
+    Order.removeOrder(item);
   };
 
   //To display items
-  $scope.cart = order.getCart;
+  $scope.cart = Order.getCart();
 
   //To edit Items
   $scope.edit = function(item) {
@@ -270,15 +268,12 @@ angular.module('app')
 
 .controller('orderScreenCtrl',function($scope,$ionicPopup,Order){
 
-  //instantiate Order object
-  var order = new Order();
-
   //Show all available orders for selection
-  $scope.orders = order.all;
+  $scope.orders = Order.all();
 
   // When an order is selected add it my orders
   $scope.addOrder = function(item){
-    order.addOrder(item);
+    Order.addOrder(item);
   };
 
 })

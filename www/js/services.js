@@ -1,23 +1,21 @@
 angular.module('app')
 
 .factory('Order',function($firebaseArray) {
+  //variables
+  var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
+  var list = $firebaseArray(ref.child('orders'));
+  var cart = {};
+  cart.items = [];
+  cart.total = 0;
 
-  //return current user id
+  //return current user id - private function
   function getCurrentUser() {
     var ref = new Firebase('https://kfcapp.firebaseio.com/users');
     var authData = ref.getAuth();
     return authData.uid;
-  };
+  }
 
-  var Order = function () {
-    var ref = new Firebase('https://kfcapp.firebaseio.com/users/' + getCurrentUser());
-    var list = $firebaseArray(ref.child('orders'));
-    var cart = {};
-    cart.items = [];
-    cart.total = 0;
-  };
-
-
+  //all possible Orders
   var orders = [{
     id: 0,
     name: 'Meal Deal',
@@ -73,71 +71,71 @@ angular.module('app')
     price: 25.00
   }];
 
+  return {
+    all: function () {
+      return orders;
+    },
 
-  Order.all = function () {
-    return orders;
-  };
+    initialize: function () {
+      this.cart = {};
+      cart.items = [];
+      cart.total = 0;
+    },
 
-  Order.initialize = function () {
-    this.cart ={};
-    cart.items =[];
-    cart.total = 0;
-  };
+    remove : function (order) {
+      orders.splice(orders.indexOf(order), 1);
+    },
 
-  Order.remove = function (order) {
-    orders.splice(orders.indexOf(order), 1);
-  };
-
-  Order.get = function (orderId) {
-    for (var i = 0; i < orders.length; i++) {
-      if (orders[i].id == parseInt(orderId)) {
-        return orders[i];
+    get: function (orderId) {
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id == parseInt(orderId)) {
+          return orders[i];
+        }
       }
-    }
-    return null;
-  };
+      return null;
+    },
 
-  Order.addOrder = function(item){
-    cart.items.push(item);
-    cart.total = parseFloat(cart.total) + parseFloat(item.price);
+    addOrder:function (item) {
+      cart.items.push(item);
+      cart.total = parseFloat(cart.total) + parseFloat(item.price);
 
-  };
+    },
 
-  Order.removeOrder = function(item){
-    var index = cart.items.indexOf(item);
-    if (index >= 0) {
-      cart.total = parseFloat(cart.total) - parseFloat(cart.items[index].price);
-      cart.items.splice(index, 1);
-      console.log("item deleted");
-    }
-  };
+    removeOrder : function (item) {
+      var index = cart.items.indexOf(item);
+      if (index >= 0) {
+        cart.total = parseFloat(cart.total) - parseFloat(cart.items[index].price);
+        cart.items.splice(index, 1);
+        console.log("item deleted");
+      }
+    },
 
-  Order.getCart = function () {
-    return cart;
-  };
+    getCart:function () {
+      return cart;
+    },
 
-  Order.placeOrder = function () {
-    var toStore = {
-      cart: cart,
-      created: new Date().toString(),
-      user: user
-    };
-    if(cart.total != 0) {
-      list.$add(order).then(function (ref) {
-        var id = ref.key();
-        list.$indexFor(id); // returns location in the array
+    placeOrder: function () {
+      var toStore = {
+        cart: cart,
+        created: new Date().toString(),
+        user: getCurrentUser()
+      };
+      if (cart.total != 0) {
+        list.$add(toStore).then(function (ref) {
+          var id = ref.key();
+          list.$indexFor(id); // returns location in the array
+        });
         return true;
-      })
-    }else{
-      return false;
+      } else {
+        return false;
+      }
+    },
+
+    clear: function () {
+      cart = {};
     }
-  };
+  }
 
-  Order.clear = function () {
-    cart = {};
-  };
-
-  return Order;
 });
 
 

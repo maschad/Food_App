@@ -68,6 +68,15 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/home.html',
           controller: "homeCtrl"
         }
+      },
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete
+          var authRef = Auth.getAuth();
+          return authRef.$requireAuth();
+        }]
       }
     })
 
@@ -78,6 +87,16 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/cartScreen.html',
           controller: 'cartCtrl'
         }
+      },
+      resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $requireAuth returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          var authRef = Auth.getAuth();
+          return authRef.$requireAuth();
+        }]
       }
     })
 
@@ -88,6 +107,16 @@ angular.module('app', ['ionic','firebase','ngCordova'])
           templateUrl: 'templates/orderScreen.html',
           controller: 'orderScreenCtrl'
         }
+      },
+      resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $requireAuth returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          var authRef = Auth.getAuth();
+          return authRef.$requireAuth();
+        }]
       }
     });
 

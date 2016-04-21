@@ -15,12 +15,11 @@ angular.module('app')
         return type;
       }
     }
-  }
-)
+})
 
 .factory('Customer', function (Auth) {
     var authRef=  Auth.getAuth();
-    var  authData = authRef.$getAuth();
+    var authData = authRef.$getAuth();
     var uid = authData.uid;
 
     return{
@@ -29,13 +28,137 @@ angular.module('app')
         },
         getCustomerName : function () {
           if(Auth.getType() == 'google'){
+            console.log(authData.google.displayName);
             return authData.google.displayName;
           }
         },
         logout : function () {
-          authRef.$unauth();
+          return authRef.$unauth();
         }
     }
+})
+
+.factory('Employee', function (Auth) {
+  /** #TODO: class for employees
+   *
+   */
+    var authRef=  Auth.getAuth();
+    var  authData = authRef.$getAuth();
+    var employeeID = authData.uid;
+    return{
+      getEmployeeID: function () {
+        return uid;
+      }
+    }
+})
+
+.factory('Location' ,function ($cordovaGeolocation) {
+
+  return {
+
+    getMap: function () {
+
+      // Map variables
+      var options = {timeout: 10000, enableHighAccuracy: true};
+
+      $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+        //my current latitude
+        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        // map options
+        var mapOptions = {
+          center: latLng,
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        // Needed for info for marker
+        var infoWindow = new google.maps.InfoWindow();
+        //Attaching map Object to DOM
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        //Set my location
+        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+        var me = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          icon: image
+        });
+
+        //Wait until the map is loaded
+        google.maps.event.addListenerOnce(map, 'idle', function () {
+
+          //Request for nearby kfc
+          var request = {
+            location: latLng,
+            radius: 500,
+            name: ['kfc']
+          };
+
+          //Find KFC's using places Service
+          var service = new google.maps.places.PlacesService(map);
+          service.nearbySearch(request, callback);
+
+          //callback function to list results and createMarkers
+          function callback(results, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+              for (var i = 0; i < results.length; i++) {
+                var place = results[i];
+                createMarker(results[i]);
+              }
+            }
+          }
+
+          //Create markers function
+          function createMarker(place) {
+            var placeLoc = place.geometry.location;
+            console.log('creating marker');
+            var marker = new google.maps.Marker({
+              map: map,
+              position: place.geometry.location
+            });
+            //Listener for the marker
+            google.maps.event.addListener(marker, 'click', function () {
+              //if marker is clicked, get directions
+              infoWindow.open(map, marker);
+              infoWindow.setContent(place.name);
+              var directionsService = new google.maps.DirectionsService;
+              var directionsDisplay = new google.maps.DirectionsRenderer();
+              //Calculate the route
+              directionsService.route({
+                origin: me.position,
+                destination: marker.position,
+                travelMode: google.maps.TravelMode.DRIVING
+              }, function (response, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  directionsDisplay.setDirections(response);
+                  directionsDisplay.setMap(map);
+                } else {
+                  window.alert('Directions request failed due to ' + status);
+                }
+              });
+            });
+          }
+
+          //Marker listener for MY location
+          google.maps.event.addListener(me, 'click', function () {
+            infoWindow.open(map, me);
+          });
+        });
+
+
+      }, function (error) {
+        console.log("Could not get location");
+      });
+
+      return map;
+    }
+  }
+})
+
+.factory('Branch',function () {
+
 })
 
 .factory('Order',function($firebaseArray,Customer) {

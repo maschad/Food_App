@@ -102,100 +102,13 @@ angular.module('app')
 })
 
   // Once user authenticated we proceed to home screen
-.controller('homeCtrl', function($scope, $state, $http, $ionicPopup, $cordovaGeolocation, Customer) {
+.controller('homeCtrl', function($scope, $state, $ionicPopup,Customer,Location) {
   //Storing the customer name
   $scope.name = Customer.getCustomerName();
+  console.log(Customer.getCustomerName());
 
-
-  // Map stuff
-  var options = {timeout: 10000, enableHighAccuracy: true};
-
-  $cordovaGeolocation.getCurrentPosition(options).then(function(position){
-
-    //my current latitude
-    var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-    // map options
-    var mapOptions = {
-      center: latLng,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    // Needed for info for marker
-    var infoWindow = new google.maps.InfoWindow();
-
-    //The actual map
-    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-    //Set my location
-    var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
-    var me = new google.maps.Marker({
-      position: latLng,
-      map: $scope.map,
-      draggable: true,
-      animation: google.maps.Animation.DROP,
-      icon: image
-    });
-
-      //Wait until the map is loaded
-    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
-
-      //Request for nearby kfc
-      var request = {
-        location: latLng,
-        radius: 500,
-        name: ['kfc']
-      };
-
-      //Find KFC's using places Service
-      var service = new google.maps.places.PlacesService($scope.map);
-      service.nearbySearch(request,callback);
-
-      //callback function to list results and createMarkers
-      function callback(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            var place = results[i];
-            createMarker(results[i]);
-          }
-        }
-      }
-      //Create markers function
-      function createMarker(place) {
-        var placeLoc = place.geometry.location;
-        console.log('creating marker');
-        var marker = new google.maps.Marker({
-          map: $scope.map,
-          position: place.geometry.location
-        });
-        //Listener for the marker
-        google.maps.event.addListener(marker, 'click', function () {
-          //if marker is clicked, get directions
-          infoWindow.open($scope.map, marker);
-          infoWindow.setContent(place.name);
-          var directionsService = new google.maps.DirectionsService;
-          var directionsDisplay = new google.maps.DirectionsRenderer();
-          //Calculate the route
-          directionsService.route({
-            origin: me.position,
-            destination: marker.position,
-            travelMode: google.maps.TravelMode.DRIVING
-          }, function(response, status) {
-            if (status === google.maps.DirectionsStatus.OK) {
-              directionsDisplay.setDirections(response);
-              directionsDisplay.setMap($scope.map);
-            } else {
-              window.alert('Directions request failed due to ' + status);
-            }
-          });
-        });
-      }
-      //Marker listener for MY location
-      google.maps.event.addListener(me, 'click', function () {
-        infoWindow.open($scope.map, me);
-      });
-    });
+  //The actual map
+  $scope.map = Location.getMap();
 
     /** #TODO:
     Firebase save
@@ -210,10 +123,6 @@ angular.module('app')
       // Code to write to Firebase will be here
     }
   **/
-
-  }, function(error){
-    console.log("Could not get location");
-  });
 
 
 

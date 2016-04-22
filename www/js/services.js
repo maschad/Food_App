@@ -44,7 +44,6 @@ angular.module('app')
                 console.log(snap.name);
               }));
           }
-
         },
         logout : function () {
           return authRef.$unauth();
@@ -60,20 +59,31 @@ angular.module('app')
   var latLng;
 
   return{
-
+      getBranchID : function () {
+        return branchID;
+      },
+      getBranchName : function () {
+        return branchName;
+      },
+      getBranchLocation : function () {
+        return location;
+      },
+      getCoordinates : function () {
+        return latLng;
+      }
   }
 })
 //Employee Object
 .factory('Employee', function (Auth,Branch) {
-  /** #TODO: class for employees
-   *
-   */
     var authRef=  Auth.getAuth();
-    var  authData = authRef.$getAuth();
+    var authData = authRef.$getAuth();
     var employeeID = authData.uid;
     return{
       getEmployeeID: function () {
         return uid;
+      },
+      completeOrder : function () {
+        return true;
       }
     }
 })

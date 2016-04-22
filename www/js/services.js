@@ -24,7 +24,7 @@ angular.module('app')
     }
 })
 
-.factory('Customer', function (Auth,$firebaseArray) {
+.factory('Customer', function (Auth) {
     var authRef = Auth.getAuth();
     return{
         getCustomerID : function () {
@@ -36,7 +36,11 @@ angular.module('app')
             return authData.google.displayName;
           }else{
             var ref = Auth.getRef();
-            return null;
+            ref.startAt(Auth.getUID(authRef))
+              .endAt(Auth.getUID(authRef)
+              .once('value',function (snap) {
+                console.log(snap.name);
+              }));
           }
 
         },

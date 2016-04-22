@@ -16,10 +16,9 @@
         <span class="input-label">Name</span>
         <input type="text" ng-model="user.name" required>
       </label>
-      <label class="item item-input">
-        <span class="input-label">Type</span>
-        <input type="radio" value="Employee" ng-model="user.type" checked required>
-        <input type="radio" value="Customer" ng-model="user.type" required>
+      <label class="item item-radio">
+        <ion-radio  ng-value="'Employee'" ng-model="user.type">Employee</ion-radio>
+        <ion-radio  ng-value="'Customer'" ng-model="user.type">Customer</ion-radio>
       </label>
       <label class="item item-input">
         <button class="button button-block button-positive" ng-click="createUser(user.email,user.password,user.name,user.type)">

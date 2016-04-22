@@ -65,8 +65,11 @@ angular.module('app')
       password:password
     }).then(function (userData) {
       $scope.hide();
-      createProfile(userData, email, password, name);
-      ref.$authWithPassword(email, password);
+      createProfile(email, password, name,type);
+      ref.$authWithPassword({
+        email:email,
+        password:password
+      });
       $state.go('tabs.home');
       }).catch(function (error) {
       $scope.hide();
@@ -88,19 +91,19 @@ angular.module('app')
     });
 
 
-    function createProfile(userData, email,password,name) {
-      var profileRef = new Firebase("https://kfcapp.firebaseio.com/users");
+    function createProfile(email,password,name,type) {
+      var profileRef = new Firebase("https://kfcapp.firebaseio.com/");
+      var usersRef = profileRef.child('users');
       //Create User object
       var user = {
         email:email,
         password:password,
         name: name,
-        uid: userData.uid
+        type: type
       };
-      var obj = $firebaseArray(profileRef);
-      obj.$add(user).then(function(ref) {
-        var id = ref.key();
-        console.log(obj.$indexFor(id)); // returns location in the array
+      usersRef.push(user).then(function(usersRef) {
+        var id = usersRef.key();
+        console.log(id); // returns location in the array
       }, function(error) {
         console.log("Error:", error);
       });

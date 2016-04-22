@@ -1,5 +1,6 @@
 angular.module('app')
 
+//Autentication Interface
 .factory("Auth", function($firebaseAuth) {
     var ref = new Firebase("https://kfcapp.firebaseio.com/users");
 
@@ -24,6 +25,7 @@ angular.module('app')
     }
 })
 
+//Customer Object
 .factory('Customer', function (Auth) {
     var authRef = Auth.getAuth();
     return{
@@ -50,7 +52,19 @@ angular.module('app')
     }
 })
 
-.factory('Employee', function (Auth) {
+//Branch Object
+.factory('Branch',function (Location) {
+  var branchID;
+  var branchName;
+  var location;
+  var latLng;
+
+  return{
+
+  }
+})
+//Employee Object
+.factory('Employee', function (Auth,Branch) {
   /** #TODO: class for employees
    *
    */
@@ -64,6 +78,7 @@ angular.module('app')
     }
 })
 
+//Location Object
 .factory('Location' ,function ($cordovaGeolocation) {
 
   return {

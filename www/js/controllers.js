@@ -23,6 +23,7 @@ angular.module('app')
     toAuth.$authWithOAuthPopup('google')
       .then(function(authData) {
         Auth.setType('google');
+        Auth.setData(authData);
         $state.go('tabs.home');
       }, function (err) {
           console.log(err);
@@ -105,7 +106,6 @@ angular.module('app')
 .controller('homeCtrl', function($scope, $state, $ionicPopup,Customer,Location) {
   //Storing the customer name
   $scope.name = Customer.getCustomerName();
-  console.log(Customer.getCustomerName());
 
   //The actual map
   $scope.map = Location.getMap();

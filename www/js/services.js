@@ -2,33 +2,35 @@ angular.module('app')
 
 .factory("Auth", function($firebaseAuth) {
     var ref = new Firebase("https://kfcapp.firebaseio.com/users");
-    var type = null;
 
-    return {
+  return {
       getAuth : function () {
         return $firebaseAuth(ref);
       },
-      setType : function (typ) {
-        type = typ;
+
+      getType : function (authRef) {
+        var authData = authRef.$getAuth();
+        return authData.provider;
       },
-      getType : function () {
-        return type;
+      getUID : function (authRef) {
+        var authData = authRef.$getAuth();
+        return authData.uid;
+      },
+      getData : function (authRef) {
+        return authRef.$getAuth();
       }
     }
 })
 
 .factory('Customer', function (Auth) {
-    var authRef=  Auth.getAuth();
-    var authData = authRef.$getAuth();
-    var uid = authData.uid;
-
+    var authRef = Auth.getAuth();
     return{
         getCustomerID : function () {
-          return uid;
+          return Auth.getUID();
         },
         getCustomerName : function () {
-          if(Auth.getType() == 'google'){
-            console.log(authData.google.displayName);
+          var authData = Auth.getData(authRef);
+          if(Auth.getType(authRef) == 'google'){
             return authData.google.displayName;
           }
         },

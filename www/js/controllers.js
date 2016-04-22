@@ -6,8 +6,9 @@ angular.module('app')
     var toAuth = Auth.getAuth();
     toAuth.$authWithPassword({
         email:username,
-        password:password
+        password:password,
     }).then(function(authData) {
+
       $state.go('tabs.home', {}, {reload: true});
     }, function(err) {
       var alertPopup = $ionicPopup.alert({
@@ -34,10 +35,10 @@ angular.module('app')
 
 
   //Registeration Controller
-.controller('registerCtrl', function ($scope,$state,$ionicLoading,$ionicPopup,$firebase) {
+.controller('registerCtrl', function ($scope,$state,$ionicLoading,$ionicPopup,$firebaseArray,Auth) {
 
   //Firebase ref
-  var ref = new Firebase('https://kfcapp.firebaseio.com/users');
+  var ref = Auth.getAuth();
 
   $scope.show = function() {
     $ionicLoading.show({
@@ -50,15 +51,7 @@ angular.module('app')
     $ionicLoading.hide();
   };
 
-  $scope.createUser = function (email,password,name) {
-
-    //Create User object
-    var user = {
-      email:email,
-      password:password,
-      name: name
-    };
-
+  $scope.createUser = function (email,password,name,type) {
     if (!email || !password) {
       var alertPopup = $ionicPopup.alert({
         title: 'Sign up failed!',
@@ -67,36 +60,50 @@ angular.module('app')
       return false;
     }
     $scope.show();
-    ref.createUser(user,function (error,userData) {
-        if(!error){
-          $scope.hide();
-          createProfile(userData,user);
-          ref.authWithPassword(email,password);
-          $state.go('tabs.home');
+    ref.$createUser({
+      email:email,
+      password:password
+    }).then(function (userData) {
+      $scope.hide();
+      createProfile(userData, email, password, name);
+      ref.$authWithPassword(email, password);
+      $state.go('tabs.home');
+      }).catch(function (error) {
+      $scope.hide();
+      if (error.code == 'INVALID_EMAIL') {
+          var alertPopup = $ionicPopup.alert({
+            title:'Invalid Email Address'
+          });
+        }
+        else if (error.code == 'EMAIL_TAKEN') {
+          var alertPopup = $ionicPopup.alert({
+            title:'Email Address already taken'
+          });
         }
         else {
-          $scope.hide();
-          if (error.code == 'INVALID_EMAIL') {
-            var alertPopup = $ionicPopup.alert({
-              title:'Invalid Email Address'
-            });
-          }
-          else if (error.code == 'EMAIL_TAKEN') {
-            var alertPopup = $ionicPopup.alert({
-              title:'Email Address already taken'
-            });
-          }
-          else {
-            var alertPopup = $ionicPopup.alert({
-              title:'Something went Wrong :('
-            });
-          }
+          var alertPopup = $ionicPopup.alert({
+            title: 'Something went Wrong :('
+          })
         }
     });
 
-    function createProfile(userData, user) {
-      var profileRef = $firebase(ref.child('profile'));
-      return profileRef.$set(authData.uid, user);
+
+    function createProfile(userData, email,password,name) {
+      var profileRef = new Firebase("https://kfcapp.firebaseio.com/users");
+      //Create User object
+      var user = {
+        email:email,
+        password:password,
+        name: name,
+        uid: userData.uid
+      };
+      var obj = $firebaseArray(profileRef);
+      obj.$add(user).then(function(ref) {
+        var id = ref.key();
+        console.log(obj.$indexFor(id)); // returns location in the array
+      }, function(error) {
+        console.log("Error:", error);
+      });
     }
   }
 

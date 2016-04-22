@@ -7,7 +7,6 @@ angular.module('app')
       getAuth : function () {
         return $firebaseAuth(ref);
       },
-
       getType : function (authRef) {
         var authData = authRef.$getAuth();
         return authData.provider;
@@ -18,21 +17,28 @@ angular.module('app')
       },
       getData : function (authRef) {
         return authRef.$getAuth();
+      },
+      getRef : function () {
+        return ref;
       }
     }
 })
 
-.factory('Customer', function (Auth) {
+.factory('Customer', function (Auth,$firebaseArray) {
     var authRef = Auth.getAuth();
     return{
         getCustomerID : function () {
-          return Auth.getUID();
+          return Auth.getUID(authRef);
         },
         getCustomerName : function () {
           var authData = Auth.getData(authRef);
           if(Auth.getType(authRef) == 'google'){
             return authData.google.displayName;
+          }else{
+            var ref = Auth.getRef();
+            return null;
           }
+
         },
         logout : function () {
           return authRef.$unauth();

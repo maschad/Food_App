@@ -6,9 +6,8 @@ angular.module('app')
     var toAuth = Auth.getAuth();
     toAuth.$authWithPassword({
         email:username,
-        password:password,
+        password:password
     }).then(function(authData) {
-
       $state.go('tabs.home', {}, {reload: true});
     }, function(err) {
       var alertPopup = $ionicPopup.alert({
@@ -23,8 +22,6 @@ angular.module('app')
     var toAuth = Auth.getAuth();
     toAuth.$authWithOAuthPopup('google')
       .then(function(authData) {
-        Auth.setType('google');
-        Auth.setData(authData);
         $state.go('tabs.home');
       }, function (err) {
           console.log(err);

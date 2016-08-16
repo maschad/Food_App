@@ -37,12 +37,13 @@ angular.module('app')
           if(Auth.getType(authRef) == 'google'){
             return authData.google.displayName;
           }else{
+            /***
             var ref = Auth.getRef();
             ref.startAt(Auth.getUID(authRef))
               .endAt(Auth.getUID(authRef)
               .once('value',function (snap) {
                 console.log(snap.name);
-              }));
+              }));**/
           }
         },
         logout : function () {
@@ -75,7 +76,7 @@ angular.module('app')
 })
 //Employee Object
 .factory('Employee', function (Auth,Branch) {
-    var authRef=  Auth.getAuth();
+    var authRef =  Auth.getAuth();
     var authData = authRef.$getAuth();
     var employeeID = authData.uid;
     return{

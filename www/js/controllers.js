@@ -184,10 +184,25 @@ angular.module('app')
 
 })
 
-.controller('orderScreenCtrl',function($scope,$ionicPopup,Order){
+.controller('orderScreenCtrl',function($scope,$ionicPopover,Order){
 
   //Show all available orders for selection
   $scope.orders = Order.all();
+
+  // .fromTemplate() method
+  var template = '<ion-popover-view><ion-header-bar> <h1 class="title">Info</h1> </ion-header-bar> <ion-content> Hello! </ion-content></ion-popover-view>';
+
+  $scope.popover = $ionicPopover.fromTemplate(template, {
+    scope: $scope
+  });
+
+  $scope.openPopover = function ($event) {
+    $scope.popover.show($event);
+  };
+
+  $scope.closePopover = function() {
+    $scope.popover.hide();
+  };
 
   // When an order is selected add it my orders
   $scope.addOrder = function(item){

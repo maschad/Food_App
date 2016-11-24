@@ -1,7 +1,7 @@
 <ion-view view-title="Place An Order">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="order in orders" type="item-text-wrap" href="#/tab/orderScreen/{{order.id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="order in orders" type="item-text-wrap"  ng-click="openPopover($event)">
         <img ng-src="{{order.icon}}">
         <h2>{{order.name}}</h2>
         <p>{{order.price | currency}}</p>
@@ -14,3 +14,4 @@
     </ion-list>
   </ion-content>
 </ion-view>
+

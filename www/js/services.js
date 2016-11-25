@@ -128,6 +128,7 @@ angular.module('app')
         google.maps.event.addListenerOnce(map, 'idle', function () {
 
           //Request for nearby kfc
+          //#TODO: make radius selectable
           var request = {
             location: latLng,
             radius: 500,
